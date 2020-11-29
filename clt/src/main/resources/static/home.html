@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/myjs.js"></script>
+    <link href="css/login.css" rel="stylesheet" rev="stylesheet" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+</head>
+<script type="text/javascript">
+    /*
+    *关闭按钮，回到空
+     * */
+    function closeMessage()
+    {
+        var str="欢迎使用本系统！";
+        $("#showbody").html(str);
+    }
+    /*
+    * 注销
+    * */
+    function logout() {
+        removeCookie("username");
+        removeCookie("name");
+        removeCookie("phone");
+        removeCookie("regTime");
+        location.replace("index.html");
+    }
+    /*
+    *个人信息
+    * */
+    function getMessage() {
+        if(getCookie("username").length==0)
+        {
+            location.replace("index.html");
+        }
+        var str="<label>用户名 ：</label>"+getCookie("username")+"<br>"
+            +"<label>姓  名：</label>"+getCookie("name")+"<br>"
+            +"<label>电  话：</label>"+getCookie("phone")+"<br>"
+            +"<label>注册时间：</label>"+getCookie("regTime")+"<br>"
+            +"<button onclick='editUser()'>编辑</button>&nbsp;&nbsp;<button onclick='closeMessage()'>关闭</button>";
+
+        $("#showbody").html(str);
+    }
+    /*
+    * 点击编辑个人信息
+    * */
+    function editUser() {
+        var str="<label>用户名 ：</label>"+getCookie("username")+"<br>"
+            +"<label>姓  名：</label><input type='text' id='name' placeholder='"+getCookie("name")+"'>"
+            +"<label>电  话：</label><input type='text' id='phone' placeholder='"+getCookie("phone")+"'>"
+            +"<label>注册时间：</label>"+getCookie("regTime")+"<br>"
+            +"<button onclick='userMessageChange()'>保存</button>&nbsp;&nbsp;<button onclick='closeMessage()'>关闭</button>";
+        $("#showbody").html(str);
+    }
+    /*
+    * 保存修改的用户信息
+    * */
+    function userMessageChange() {
+
+        var phone=$("#phone").val();
+        var name=$("#name").val();
+        if(phone.length==0)
+        {
+            phone=getCookie("phone");
+        }
+        if(name.length==0)
+        {
+            name=getCookie("name");
+        }
+        $.ajax(
+            {
+                url:"customer/login/change",
+                data:{username:getCookie("username"),name:name,phone:phone},
+                success:function (res) {
+                    if(res==1)
+                    {
+                        setCookie("name",name);
+                        setCookie("phone",phone);
+                        alert("修改成功！");
+                    }
+                }
+            }
+        )
+
+    }
+    /*
+    * 购物车
+    * */
+    function getShopcart()
+    {
+        if(getCookie("username").length==0)
+        {
+            location.replace("index.html");
+        }
+        $.ajax({
+                url:"customer/myshopcart",
+                data:{username:getCookie("username")},
+                success:function (res) {
+                    console.log(res);
+                  var str="";
+                    for(var key in res)
+                  {
+                      str+="<label>商品名：</label>"+res[key]["product"]["name"]+"<br>"
+                          +"<label>单价：</label>"+res[key]["product"]["price"]+"<br>"
+                          +"<label>数量：</label>"+res[key]["shopcart"]["shuliang"]+"<br>"
+                          +"<button onclick='deleteShopCart("+res[key]["product"]["id"]+")'>删除</button>&nbsp;&nbsp;<br>";
+                  }
+                    str+="<button onclick='jiesuan()'>结算</button><button onclick='closeMessage()'>关闭</button>";
+                        $("#showbody").html(str);
+
+                }
+
+            }
+
+
+        )
+    }
+    /*
+    * 删除某一项
+    * */
+    function deleteShopCart(productid) {
+        $.ajax({
+            url:"customer/myshopcart/delete",
+            data:{username:getCookie("username"),productid:productid},
+            success:function (res) {
+                if(res==1)
+                    getShopcart();
+
+            }
+        })
+
+    }
+    /*结算
+    * */
+    function jiesuan() {
+        $.ajax(
+            {
+                url:"customer/myaddress",
+                data:{username:getCookie("username")},
+                success:function (res) {
+                    console.log(res);
+                    var str="<label>选择地址:</label><select id='address'>";
+
+
+                    for(var key in res)
+                    {
+                        str+="<option value='"+res[key]["id"]+"'>"+res[key]["val"]+"</option> "
+                    }
+                    str+="</select><button onclick='addOrder()'>确定</button>";
+                    $("#showbody").html(str);
+                }
+
+
+            }
+        )
+
+    }
+    /*
+    * 结算添加订单
+    * */
+    function addOrder() {
+        var address=$("#address").val();
+        $.ajax({
+            url:"customer/orderinfo/jiesuan",
+            data:{username:getCookie("username"),address:address},
+            success:function (res) {
+                if(res==1)
+                {
+                    myOrders();
+                }
+            }
+        })
+
+    }
+
+
+    /*
+    * 所有商品
+    * */
+    function getAllProducts(){
+        $.ajax({
+            url:"server/products",
+            success:function (res) {
+                if(res.size!=0)
+                {   console.log(res);
+                    var i=0;
+                    var str="";
+                    var username=getCookie("username")
+                        for(var key in res)
+                        {
+                            str+="<label>商品名：</label>"+res[key]["product"]["name"]+"<br>"
+                                +"<label>单价：</label>"+res[key]["product"]["price"]+"<br>"
+                                //+"<label>成本：</label>"+res[key]["product"]["cost"]+"<br>"
+                                +"<label>库存：</label>"+res[key]["product"]["stock"]+"<br>"
+                                +"<label>类别：</label>"+res[key]["category"]["val"]+"<br>"
+                                +"<a href=\"customer/myshopcart/add?username="+username+"&productid="+res[key]["product"]["id"]+"\">加入购物车</a><br>";
+                        }
+                    $("#showbody").html(str);
+                }
+            }
+
+        })
+
+    }
+    /*
+    * 我的订单
+    * */
+    function myOrders() {
+        if(getCookie("username").length==0)
+        {
+            location.replace("index.html");
+        }
+        $.ajax({
+            url:"customer/myorders",
+            data:{username:getCookie("username")},
+            success:function (res) {
+                if(res.size!=0)
+                {   console.log(res);
+                    var i=0;
+                    var str="";
+                    for(var key in res)
+                    {
+                        str+="<label>订单编号：</label>"+res[key]["order"]["oid"]+"<br>"
+                            +"<label>收获人：</label>"+res[key]["address"]["cusername"]+"<br>"
+                            +"<label>收获地址：</label>"+res[key]["address"]["val"]+"<br>"
+                            +"<button onclick='orderInfo("+res[key]["order"]["oid"]+")'>详情</button>"
+                    }
+                    $("#showbody").html(str);
+                }
+            }
+
+        })
+
+    }
+    function orderInfo(oid) {
+
+        $.ajax(
+            {
+                url:"customer//orderinfo",
+                data:{id:oid},
+                success:
+                function (res) {
+                    console.log(res);
+                   var str="<label>订单编号：</label>"+oid+"<br>";
+                   for(var key in res)
+                   {
+
+                       str+="<label>商品名称:</label>"+res[key]["product"]["name"]+"<br>"
+                       +"<label>单价：</label>"+res[key]["product"]["price"]+"<br>"
+                       +"<label>数量：</label>"+res[key]["orderinfo"]["shuliang"]+"<br>";
+                   }
+                   str+="<button onclick='closeMessage()'>关闭</button>";
+                   $("#showbody").html(str);
+                }
+            }
+        )
+
+    }
+
+</script>
+<body>
+<div id="header" style="background-color: transparent !important;">
+    <h1 style="margin-bottom:0;color: #FD0017">电商管理客户端</h1></div>
+<div id="useroption" class="myaside" style="height:1000px " >
+    <div style="background-color: transparent !important;"><button class="button6" style="vertical-align:middle"  onclick="getMessage()"><span>个人资料</span></button></div>
+    <div style="background-color: transparent !important;"><button class="button6" style="vertical-align:middle"  onclick="getShopcart()"><span>购 物 车</span></button></div>
+    <div style="background-color: transparent !important;"><button class="button6" style="vertical-align:middle"  onclick="getAllProducts()"><span>所有商品</span></button></div>
+    <div style="background-color: transparent !important;"><button class="button6" style="vertical-align:middle" onclick="myOrders()" ><span>我的订单 </span></button></div>
+    <div style="background-color: transparent !important;"><button class="button6" style="vertical-align:middle" onclick="logout()" ><span>注    销 </span></button></div>
+
+</div>
+
+<div id="showbody" class="mysection" style="height:1000px;width:81%">
+
+</div>
+
+
+
+
+<div id="footer" class="myfooter">
+</div>
+</body>
+</html>

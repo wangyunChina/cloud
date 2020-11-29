@@ -1,0 +1,332 @@
+@charset "utf-8";
+/* CSS Document */
+ body{
+                padding:0;
+                background-attachment: fixed;
+                background-clip: border-box;
+                background-color: #666666;
+                background-origin: padding-box;
+                background-position: center top;
+                background-repeat: no-repeat;
+                background-size: cover;
+                width: 100%;
+                background: white;
+}
+p{
+	color:#FD0017;
+	font-size: 15px;
+}
+li{
+	float:right;
+	margin: 10px;
+	
+}
+          li.toggle{
+              display: block;
+           }
+          li.toggle1{
+              display: none;
+            }
+       
+#tab{
+	background: #FFFFFF;
+	width: 500px;
+	height:auto;
+  margin: 10px;
+  padding: 5px;
+	border-style:inset;
+	border-color:aqua;
+	position: absolute;
+	top:100px;
+	right:200px;	
+}
+
+.input{
+	position:absolute;
+	left:150px;
+	
+}
+.button {
+    background-color: #4CAF50; /*Green*/
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;
+width: 100%;
+} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
+.button5 {background-color: #555555;} /* Black */
+input[type=text], select {/*所有text的样式*/
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=text1], select {/*修改课程信息和添加课程信息样式*/
+  width: 200px;
+  height: 40px;
+  padding: 12px 20px;
+  margin: -22px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=date]{/*日期选择器样式*/
+  width: 200px;
+  height: 40px;
+  padding: 12px 20px;
+  margin: -22px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+
+input[type=password], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+div {
+  border-radius: 5px;
+  /*background-color: #f2f2f2;*/
+  padding: 20px;
+
+}
+
+.mysection{
+width:80%;float:left; opacity:1;
+	background-color: transparent !important;
+	padding: 5px;
+	border-style:solid; border-width:1px; border-color:aqua;
+	
+}
+.myaside{
+	width:15%;float:left; opacity: 1;
+	background-color: transparent !important;
+	border-style:solid; border-width:1px; border-color:aqua;
+	
+}
+.myfooter{
+	heigit:10%;
+	clear:both;text-align:center; opacity: 1;
+	background-color: transparent !important;
+	width: 96%;
+	border-style:solid; border-width:1px; border-color:aqua;
+}
+
+.button6 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 18px;
+  padding: 10px;
+  width: 100%;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+	height:70px;
+}
+
+
+.button6 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+	
+}
+
+.button6 span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right:-20px;
+  transition: 0.5s;
+	
+}
+
+.button6:hover span {
+  padding-right: 25px;
+	
+}
+
+.button6:hover span:after {
+  opacity: 1;
+  right: 0;
+	
+}
+.button7 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 13px;
+  padding: 10px;
+  width: 100%;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 4px;
+	height:50px;
+}
+
+.button7 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+	
+}
+
+.button7 span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+	
+}
+
+.button7:hover span {
+  padding-right: 25px;
+	
+}
+
+.button7:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.button8 {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+
+#customers
+{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	width:100%;
+	border-collapse:collapse;
+}
+#customers td, #customers th 
+{
+	font-size:20px;
+	border:1px solid #98bf21;
+	padding:3px 7px 2px 7px;
+	text-align: center;
+	background-color:#A7C942;
+}
+#customers th 
+{
+	font-size:1.1em;
+	text-align:left;
+	padding-top:5px;
+	padding-bottom:4px;
+	background-color:#A7C942;
+	color:#ffffff;
+}
+#customers tr.alt td 
+{
+	color:#000000;
+	background-color:#EAF2D3;
+}
+   #submitSelectClass{
+        position:absolute;
+        right:0;
+    }
+#classStudentMessage{
+        position:absolute;
+        right:0;
+    }
+ #submitCancleClass{
+        position:absolute;
+        right:0;
+    }/*
+下拉菜单
+*/
+/*
+下拉菜单
+*/
+.dropdown {
+  position: relative;
+  display: inline-block;
+background-color: transparent !important;
+	width: 100%;
+	
+}
+.dropdown-content {
+  display: none;
+  min-width: 120px;
+  box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.2);
+  padding: 8px 10px;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+background-color: transparent !important;
+}
+/*链接样式的按钮*/
+.btn {
+        color: blue;    
+        background-color: transparent !important;
+        border: 0px none;  /*去边框*/
+        font-family: "宋体";
+        font-size: 15px;
+        text-decoration:underline;  /*加下划线*/
+    }
+    
+    .btn:focus { 
+        outline: none;    /*去边框*/
+    }
+

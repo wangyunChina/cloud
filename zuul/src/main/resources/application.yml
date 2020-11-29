@@ -1,0 +1,37 @@
+server:
+  port: 80
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://120.26.184.150:8761/eureka/
+spring:
+  application:
+    name: zuul
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+zuul:
+  routes:
+    clt:
+      path: /clt/**
+      serviceId: clt
+    userservice:
+      path: /userservice/**
+      serviceId: userservice
+    fileservice:
+      path: /fileservice/**
+      serviceId: fileservice
+  host:
+    maxTotalConnections: 10000
+    maxPerRouteConnections: 10000
+    connect-timeout-millis: 15000 #HTTP连接超时大于Hystrix的超时时间
+    socket-timeout-millis: 60000   #socket超时
+    semaphore:
+      max-semaphores: 200
+jwt:
+  key: 91925AES5
+ribbon:        #设置ribbon的超时时间小于zuul的超时时间
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
