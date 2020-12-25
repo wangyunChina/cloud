@@ -77,13 +77,19 @@ public class ManagerFilter extends ZuulFilter {
         if(request.getRequestURI().indexOf("doc")>0){ //登录请求放行
             return null;
         }
+        if(request.getRequestURI().indexOf("webjars")>0){ //登录请求放行
+            return null;
+        }
+        if(request.getRequestURI().indexOf("swagger-resources")>0){ //
+            return null;
+        }
 
         //得到头信息
         String header = request.getHeader("Authorization");
         String cid = request.getHeader("cid");
         String message="cid不能为空";
         if(!StringUtils.isEmpty(cid)&&header!=null && !"".equals(header)){
-            if(header.startsWith("Bearer ")){
+            if(header.startsWith("Bearer")){
                 String token = header.substring(7);
                 try {
                     Claims claims = jwtUtil.parseJWT(token,null);
@@ -102,6 +108,11 @@ public class ManagerFilter extends ZuulFilter {
                 }catch (ExpiredJwtException e1){
                     e1.printStackTrace();
                     message="apiToken time out";
+                    requestContext.setSendZuulResponse(false);//终止运行
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    message="apiToken invalid";
                     requestContext.setSendZuulResponse(false);//终止运行
                 }
             }
