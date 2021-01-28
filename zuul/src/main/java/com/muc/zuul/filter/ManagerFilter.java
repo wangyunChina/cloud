@@ -83,6 +83,24 @@ public class ManagerFilter extends ZuulFilter {
         if(request.getRequestURI().indexOf("swagger-resources")>0){ //
             return null;
         }
+        if(request.getRequestURI().indexOf("html")>0){ //
+            return null;
+        }
+        if(request.getRequestURI().indexOf("js")>0){ //
+            return null;
+        }
+        if(request.getRequestURI().indexOf("css")>0){ //
+            return null;
+        }
+        if(request.getRequestURI().indexOf("png")>0){ //
+            return null;
+        }
+        if(request.getRequestURI().indexOf("font")>0){ //
+            return null;
+        }
+        if(request.getRequestURI().indexOf("english")>0){ //
+            return null;
+        }
 
         //得到头信息
         String header = request.getHeader("Authorization");

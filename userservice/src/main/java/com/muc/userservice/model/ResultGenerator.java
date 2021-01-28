@@ -58,7 +58,7 @@ public class ResultGenerator {
         Result result = new Result();
         result.setCode(code);
         result.setMessage(message);
-        result.setData(new Object());
+        result.setData(null);
         return result;
     }
 

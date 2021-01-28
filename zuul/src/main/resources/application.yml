@@ -27,6 +27,10 @@ zuul:
       path: /english/**
       serviceId: english
       url: http://124.70.14.185:5880/
+    index:
+      path: /index/**
+      serviceId: index
+      url: http://epie-api.top:8080/
   host:
     maxTotalConnections: 10000
     maxPerRouteConnections: 10000

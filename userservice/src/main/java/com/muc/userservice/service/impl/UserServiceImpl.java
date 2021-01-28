@@ -3,6 +3,8 @@ package com.muc.userservice.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.muc.userservice.config.ConfigInfo;
+import com.muc.userservice.consts.Consts;
+import com.muc.userservice.consts.RetEnum;
 import com.muc.userservice.entity.User;
 import com.muc.userservice.mapper.UserMapper;
 import com.muc.userservice.model.*;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -30,8 +33,9 @@ public class UserServiceImpl  implements UserService {
     private String systemName;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private SMSCodeMap sMSCodeMap;
     @Override
-
     public int register(ReqRegisterVo request) {
         String mobile="";
         if(StringUtils.isNotBlank(request.getMobile())) {
@@ -56,13 +60,29 @@ public class UserServiceImpl  implements UserService {
     @Override
     @Transactional
     public Result<RespLoginVo> login(ReqLoginVo reqLoginVo) {
+        User user=null;
+        QueryWrapper<User> queryWrapper=new QueryWrapper<User>();
         String aesMoblie=Encryption.encrypt(reqLoginVo.getMobile(),ConfigInfo.dataSecret,ConfigInfo.dataSecretIv,"UTF-8");
         String password=Encryption.encrypt(reqLoginVo.getPassword(),ConfigInfo.dataSecret,ConfigInfo.dataSecretIv,"UTF-8");
-        QueryWrapper<User> queryWrapper=new QueryWrapper<User>();
-        log.info("username {} passowrd {}",aesMoblie,password);
-        queryWrapper.eq("aes_mobile",aesMoblie);
-        queryWrapper.eq("password",password);
-        User user=userMapper.selectOne(queryWrapper);
+        if(reqLoginVo.getMode()== Consts.codelogin){
+           SMSCodeVo sessionCode = sMSCodeMap.get(reqLoginVo.getMobile());
+           if(sessionCode!=null&&reqLoginVo.getCode().equals(sessionCode.getCode())&& LocalDateTime.now().compareTo(sessionCode.getExpireTime())<0){
+               sMSCodeMap.remove(reqLoginVo.getMobile());
+               queryWrapper.eq("aes_mobile",aesMoblie);
+               user=userMapper.selectOne(queryWrapper);
+               if(user==null){
+                   return ResultGenerator.genErrorResult(RetEnum.CODE_ERROR.getCode(),RetEnum.CODE_ERROR.getMessage());
+               }
+           }else{
+               return ResultGenerator.genErrorResult(RetEnum.CODE_ERROR.getCode(),RetEnum.CODE_ERROR.getMessage());
+           }
+        }else if(reqLoginVo.getMode()== Consts.passwordLogin){
+
+            log.info("username {} passowrd {}",aesMoblie,password);
+            queryWrapper.eq("aes_mobile",aesMoblie);
+            queryWrapper.eq("password",password);
+            user=userMapper.selectOne(queryWrapper);
+        }
         if(user!=null){
           return ResultGenerator.genSuccessResult( RespLoginVo.builder()
                   .cid(user.getCid())
