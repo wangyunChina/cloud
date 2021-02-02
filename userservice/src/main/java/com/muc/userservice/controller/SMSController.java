@@ -20,10 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class SMSController extends BaseController {
     @Autowired
     SmsService smsService;
-    @PostMapping(value = "/v1/SMS/send",name = "发送短信")
+    @PostMapping(value = "/open/v1/SMS/send",name = "发送短信")
     public Result send(@RequestBody ReqSMSSendVo reqSMSSendVo) throws ClientException {
         try {
-            smsService.sendSms(reqSMSSendVo);
+            return  smsService.sendSms(reqSMSSendVo);
+        }catch(ClientException e){
+            log.error(e.getMessage());
+        }
+        return ResultGenerator.genFailResult("短信发送失败");
+    }
+    @PostMapping(value = "/open/v1/SMS/check",name = "校验验证码")
+    public Result check(@RequestBody ReqSMSSendVo reqSMSSendVo) throws ClientException {
+        try {
+          return  smsService.sendSms(reqSMSSendVo);
         }catch(ClientException e){
             log.error(e.getMessage());
         }

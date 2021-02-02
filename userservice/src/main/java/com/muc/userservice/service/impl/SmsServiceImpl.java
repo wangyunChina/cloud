@@ -11,6 +11,7 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.muc.userservice.consts.Consts;
+import com.muc.userservice.consts.RetEnum;
 import com.muc.userservice.model.*;
 import com.muc.userservice.service.SmsService;
 import com.muc.userservice.util.SecureRandomUtil;
@@ -40,11 +41,11 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private SMSCodeMap sMSCodeMap;
     @Override
-    public void sendSms(ReqSMSSendVo smsSendVo) throws ClientException {
+    public Result sendSms(ReqSMSSendVo smsSendVo) throws ClientException {
         SMSCodeVo sessionCode = sMSCodeMap.get(smsSendVo.getMobile());
         if(sessionCode!=null&& LocalDateTime.now().compareTo(sessionCode.getExpireTime())<0){
             log.error("用户：{} 已经发送过验证码，请不要重复点击！",smsSendVo.getMobile());
-            return;
+            return ResultGenerator.genErrorResult(RetEnum.DOUBLE_CLICK.getCode(),RetEnum.DOUBLE_CLICK.getMessage());
         }
 //初始化ascClient需要的几个参数
         final String product = "Dysmsapi";//短信API产品名称（短信产品名固定，无需修改）
@@ -84,13 +85,28 @@ public class SmsServiceImpl implements SmsService {
             log.info("手机号:{} 验证码：{} 发送成功！",smsSendVo.getMobile(),param.getCode());
 //请求成功,将数据缓存起来等待用户登录消费
             sMSCodeMap.put(smsSendVo.getMobile(), SMSCodeVo.builder().code(param.getCode()).expireTime(LocalDateTime.now().plusMinutes(3)).build());
+        return ResultGenerator.genSuccessResult(sendSmsResponse);
         }else{
            log.error("发送失败：", JSON.toJSONString(sendSmsResponse));
+         return   ResultGenerator.genFailResult("短信发送失败!");
         }
         }catch (ClientException e){
-
+            return ResultGenerator.genErrorResult(RetEnum.INTERNAL_ERROR.getCode(),"阿里云服务器连接异常！");
         }
     }
+
+    @Override
+    public Result check(ReqSMSCheckVo smsCheckVo) {
+        SMSCodeVo sessionCode = sMSCodeMap.get(smsCheckVo.getMobile());
+        if(sessionCode!=null&& LocalDateTime.now().compareTo(sessionCode.getExpireTime())<0&&smsCheckVo.getCode().equals(sessionCode.getCode())){
+            log.error("用户：{} 验证码:{}，校验通过！",smsCheckVo.getMobile(),smsCheckVo.getCode());
+            sMSCodeMap.remove(smsCheckVo.getMobile());
+            return ResultGenerator.genSuccessResult(new Boolean(true));
+        }
+        log.error("用户：{} 验证码:{}，校验失败！",smsCheckVo.getMobile(),smsCheckVo.getCode());
+        return ResultGenerator.genSuccessResult(new Boolean(false));
+    }
+
     public String getCode(){
         SecureRandomUtil random = new SecureRandomUtil();
         StringBuilder sb = new StringBuilder();
