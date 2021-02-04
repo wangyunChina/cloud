@@ -31,7 +31,7 @@ public class FileController extends BaseController{
     @Value("${file.size}")
     private long fileSize;
     @ApiOperation(value = "上传文件",notes = "只能上传jpg,jpeg,gif,png,word,pdf,m4a,mp3,mp4格式的文件！")
-    @PostMapping(value = "/v1/upload_file")
+    @PostMapping(value = "/open/v1/upload_file")
     public Result<RespUploadFileVo> uploadPhoto(@RequestBody MultipartFile fileName) throws IOException {
         Result ret = new Result();
         if (fileName == null) {

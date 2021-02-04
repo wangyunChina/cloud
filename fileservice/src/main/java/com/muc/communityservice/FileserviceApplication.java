@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("com.muc")
-@MapperScan(basePackages = "com.muc.fileservice.mapper")
+@MapperScan(basePackages = "com.muc.communityservice.mappers")
 @EnableEurekaClient
 @EnableFeignClients
 @EnableDiscoveryClient

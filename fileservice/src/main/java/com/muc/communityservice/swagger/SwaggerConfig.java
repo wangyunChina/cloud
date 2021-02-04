@@ -50,7 +50,7 @@ public class SwaggerConfig {
         docket = docket.apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors
-                        .basePackage("com.muc.fileservice.controller")) // 配置需要扫描的包路径   .globalOperationParameters(pars)
+                        .basePackage("com.muc.communityservice.controller")) // 配置需要扫描的包路径   .globalOperationParameters(pars)
                 .paths(PathSelectors.any()).build().globalOperationParameters(pars);
 
 
