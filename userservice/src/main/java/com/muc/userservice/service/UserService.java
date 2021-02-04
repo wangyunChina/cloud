@@ -7,7 +7,9 @@ import com.muc.userservice.model.ReqRegisterVo;
 import com.muc.userservice.model.RespLoginVo;
 import com.muc.userservice.model.Result;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 public interface UserService  {
-    public int register(ReqRegisterVo request);
+    public int register(ReqRegisterVo request) throws SQLIntegrityConstraintViolationException;
     public Result<RespLoginVo> login(ReqLoginVo reqLoginVo);
 }

@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -36,7 +39,7 @@ public class UserServiceImpl  implements UserService {
     @Autowired
     private SMSCodeMap sMSCodeMap;
     @Override
-    public int register(ReqRegisterVo request) {
+    public int register(ReqRegisterVo request) throws SQLIntegrityConstraintViolationException {
         String mobile="";
         if(StringUtils.isNotBlank(request.getMobile())) {
             mobile="86"
@@ -44,7 +47,7 @@ public class UserServiceImpl  implements UserService {
                     .concat("****")
                     .concat(request.getMobile().substring(7,11));
         }
-
+        String aesMobile=Encryption.encrypt(request.getMobile(),ConfigInfo.dataSecret,ConfigInfo.dataSecretIv,"UTF-8");
         User user=User.builder()
                 .cid(getCidSeq(systemName))
                 .firstname(request.getFirstname())
@@ -52,9 +55,17 @@ public class UserServiceImpl  implements UserService {
                 .mobile(mobile)
                 .nickName(request.getNickName())
                 .password(Encryption.encrypt(request.getPassword(),ConfigInfo.dataSecret,ConfigInfo.dataSecretIv,"UTF-8"))
-                .aesMobile(Encryption.encrypt(request.getMobile(),ConfigInfo.dataSecret,ConfigInfo.dataSecretIv,"UTF-8"))
+                .aesMobile(aesMobile)
+                .avatar(request.getAvatarUrl())
                 .build();
-        return userMapper.insert(user);
+            if(userMapper.selectCount(new QueryWrapper<User>().lambda().eq(User::getAesMobile,aesMobile))>0){
+                throw new SQLIntegrityConstraintViolationException();
+            }else{
+                return userMapper.insert(user);
+            }
+
+
+
     }
 
     @Override

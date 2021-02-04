@@ -15,4 +15,6 @@ public class ReqRegisterVo {
     private String password;
     @ApiModelProperty(name = "昵称",required = true)
     private String nickName;
+    @ApiModelProperty(name = "头像",required = true)
+    private String avatarUrl;
 }

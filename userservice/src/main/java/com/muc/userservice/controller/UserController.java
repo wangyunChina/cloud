@@ -1,5 +1,6 @@
 package com.muc.userservice.controller;
 
+import com.muc.userservice.consts.RetEnum;
 import com.muc.userservice.entity.User;
 import com.muc.userservice.model.*;
 import com.muc.userservice.service.UserService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @RestController
 @RequestMapping("/user/api")
 @Api(value = "用户管理")
@@ -23,7 +26,12 @@ public class UserController extends BaseController {
     @ApiOperation("注册")
     public Result register(@RequestBody ReqRegisterVo request)
     {
-        return ResultGenerator.genSuccessResult(userService.register(request));
+        try{
+            return ResultGenerator.genSuccessResult(   userService.register(request));
+        }catch (SQLIntegrityConstraintViolationException e){
+           return ResultGenerator.genErrorResult(RetEnum.REGISTER_AGAIN.getCode(),RetEnum.REGISTER_AGAIN.getMessage());
+        }
+
     }
     @PostMapping("/v1/login")
     @ApiOperation("登录")
